@@ -1,5 +1,6 @@
 import { createRenderer } from "./renderer";
 import { World } from "./state/world/type";
+import "./style.css";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const renderer = createRenderer(canvas);
@@ -12,8 +13,8 @@ const loop = () => {
 	//
 	// step
 	//
-	world.camera.eye[0] = Math.cos(Date.now() * 0.004) * 10;
-	world.camera.eye[2] = Math.sin(Date.now() * 0.004) * 10;
+	world.camera.eye[0] = Math.cos(Date.now() * 0.002) * 10;
+	world.camera.eye[2] = Math.sin(Date.now() * 0.002) * 10;
 	world.camera.generation++;
 
 	//

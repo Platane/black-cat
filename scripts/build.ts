@@ -4,6 +4,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import { minify as minifyHtml } from "html-minifier-terser";
 import { OutputChunk, rollup } from "rollup";
 import esbuild from "rollup-plugin-esbuild";
+import css from "rollup-plugin-import-css";
 import { minify as minifyJs } from "terser";
 import { mangleGlslVariable, minifyGlsl } from "./minifyGlsl";
 import { importAsset } from "./rollup-plugin-import-asset";
@@ -19,6 +20,8 @@ export const build = async () => {
 			resolve({
 				extensions: [".ts", ".js"],
 			}),
+
+			css(),
 
 			esbuild({
 				include: ["**/*.ts"],
@@ -72,7 +75,12 @@ export const build = async () => {
 		jsCode = out.code!;
 	}
 
-	let cssCode = "";
+	let cssCode = output
+		.map((a) =>
+			a.type === "asset" && a.fileName.endsWith(".css") ? a.source : null,
+		)
+		.filter(Boolean)
+		.join("\n");
 
 	let htmlContent = fs.readFileSync(__dirname + "/../src/index.html", "utf8");
 
@@ -83,8 +91,8 @@ export const build = async () => {
 
 	if (cssCode)
 		htmlContent = htmlContent.replace(
-			"</head>",
-			`<style>${cssCode}</style></head>`,
+			"<script",
+			`<style>${cssCode}</style><script`,
 		);
 
 	htmlContent = await minifyHtml(htmlContent, {
@@ -103,7 +111,7 @@ export const build = async () => {
 
 	fs.writeFileSync(distDir + "index.html", htmlContent);
 	for (const a of output) {
-		if (a.type === "asset") {
+		if (a.type === "asset" && !a.fileName.endsWith(".css")) {
 			fs.writeFileSync(distDir + a.fileName, a.source);
 		}
 	}

@@ -4,22 +4,23 @@
     "": {
       "name": "@platane/black-cat",
       "dependencies": {
-        "gl-matrix": "3.4.4",
+        "gl-matrix": "latest",
       },
       "devDependencies": {
-        "@biomejs/biome": "2.2.0",
-        "@rollup/plugin-commonjs": "28.0.6",
-        "@rollup/plugin-node-resolve": "16.0.1",
-        "@types/bun": "1.2.20",
-        "@types/html-minifier-terser": "7.0.2",
-        "html-minifier-terser": "7.2.0",
-        "rollup": "4.46.2",
-        "rollup-plugin-esbuild": "6.2.1",
-        "rollup-pluginutils": "2.8.2",
-        "terser": "5.43.1",
-        "typescript": "5.9.2",
-        "typescript-plugin-css-modules": "5.2.0",
-        "vite": "7.1.2",
+        "@biomejs/biome": "latest",
+        "@rollup/plugin-commonjs": "latest",
+        "@rollup/plugin-node-resolve": "latest",
+        "@types/bun": "latest",
+        "@types/html-minifier-terser": "latest",
+        "html-minifier-terser": "latest",
+        "rollup": "latest",
+        "rollup-plugin-esbuild": "latest",
+        "rollup-plugin-import-css": "latest",
+        "rollup-pluginutils": "latest",
+        "terser": "latest",
+        "typescript": "latest",
+        "typescript-plugin-css-modules": "latest",
+        "vite": "latest",
       },
     },
   },
@@ -375,6 +376,8 @@
     "rollup": ["rollup@4.46.2", "", { "dependencies": { "@types/estree": "1.0.8" }, "optionalDependencies": { "@rollup/rollup-android-arm-eabi": "4.46.2", "@rollup/rollup-android-arm64": "4.46.2", "@rollup/rollup-darwin-arm64": "4.46.2", "@rollup/rollup-darwin-x64": "4.46.2", "@rollup/rollup-freebsd-arm64": "4.46.2", "@rollup/rollup-freebsd-x64": "4.46.2", "@rollup/rollup-linux-arm-gnueabihf": "4.46.2", "@rollup/rollup-linux-arm-musleabihf": "4.46.2", "@rollup/rollup-linux-arm64-gnu": "4.46.2", "@rollup/rollup-linux-arm64-musl": "4.46.2", "@rollup/rollup-linux-loongarch64-gnu": "4.46.2", "@rollup/rollup-linux-ppc64-gnu": "4.46.2", "@rollup/rollup-linux-riscv64-gnu": "4.46.2", "@rollup/rollup-linux-riscv64-musl": "4.46.2", "@rollup/rollup-linux-s390x-gnu": "4.46.2", "@rollup/rollup-linux-x64-gnu": "4.46.2", "@rollup/rollup-linux-x64-musl": "4.46.2", "@rollup/rollup-win32-arm64-msvc": "4.46.2", "@rollup/rollup-win32-ia32-msvc": "4.46.2", "@rollup/rollup-win32-x64-msvc": "4.46.2", "fsevents": "~2.3.2" }, "bin": { "rollup": "dist/bin/rollup" } }, "sha512-WMmLFI+Boh6xbop+OAGo9cQ3OgX9MIg7xOQjn+pTCwOkk+FNDAeAemXkJ3HzDJrVXleLOFVa1ipuc1AmEx1Dwg=="],
 
     "rollup-plugin-esbuild": ["rollup-plugin-esbuild@6.2.1", "", { "dependencies": { "debug": "^4.4.0", "es-module-lexer": "^1.6.0", "get-tsconfig": "^4.10.0", "unplugin-utils": "^0.2.4" }, "peerDependencies": { "esbuild": ">=0.18.0", "rollup": "^1.20.0 || ^2.0.0 || ^3.0.0 || ^4.0.0" } }, "sha512-jTNOMGoMRhs0JuueJrJqbW8tOwxumaWYq+V5i+PD+8ecSCVkuX27tGW7BXqDgoULQ55rO7IdNxPcnsWtshz3AA=="],
+
+    "rollup-plugin-import-css": ["rollup-plugin-import-css@4.0.2", "", { "dependencies": { "@rollup/pluginutils": "^5.2.0" }, "peerDependencies": { "rollup": "^2.x.x || ^3.x.x || ^4.x.x" } }, "sha512-ud+/BxNpzjZD8Ak/GSCezC1LRbGXaKFKNjDwJu9NMX1dQlrT0J/vmNfuYq1zX2lTbwtTyPlnGVctIm6wGRDx2A=="],
 
     "rollup-pluginutils": ["rollup-pluginutils@2.8.2", "", { "dependencies": { "estree-walker": "^0.6.1" } }, "sha512-EEp9NhnUkwY8aif6bxgovPHMoMoNr2FulJziTndpt5H9RdwC47GSGuII9XxpSdzVGM0GWrNPHV6ie1LTNJPaLQ=="],
 

@@ -5,6 +5,7 @@
 		"gl-matrix": "3.4.4"
 	},
 	"devDependencies": {
+		"rollup-plugin-import-css": "4.0.2",
 		"rollup-pluginutils": "2.8.2",
 		"@biomejs/biome": "2.2.0",
 		"@types/bun": "1.2.20",
