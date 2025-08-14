@@ -19,7 +19,9 @@ jobs:
 
       - run: bun scripts/build
 
-      - run: sudo apt-get install -y advancecomp
+      - uses: daaku/gh-action-apt-install@v4
+        with:
+          packages: advancecomp
 
       - run: bun scripts/bundle
 
