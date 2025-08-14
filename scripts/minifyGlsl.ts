@@ -26,7 +26,9 @@ export const mangleGlslVariable = (jsCode: string) => {
 	const variableNames = Array.from(
 		new Set(
 			Array.from(
-				jsCode.matchAll(/(in|out|uniform)\s+(vec4|vec3|mat4|mat3)\s+(\w+)/g),
+				jsCode.matchAll(
+					/(in|out|uniform)\s+(float|vec2|vec3|vec4|mat4|mat3|int|ivec2|ivec3|ivec4)\s+(\w+)/g,
+				),
 			).map(([_0, _1, _2, v]) => v),
 		),
 	);

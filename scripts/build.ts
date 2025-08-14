@@ -5,7 +5,7 @@ import { minify as minifyHtml } from "html-minifier-terser";
 import { OutputChunk, rollup } from "rollup";
 import esbuild from "rollup-plugin-esbuild";
 import { minify as minifyJs } from "terser";
-import { minifyGlsl } from "./minifyGlsl";
+import { mangleGlslVariable, minifyGlsl } from "./minifyGlsl";
 import { importAsset } from "./rollup-plugin-import-asset";
 
 export const build = async () => {
@@ -44,6 +44,9 @@ export const build = async () => {
 	let { code: jsCode } = output.find(
 		(chunk) => chunk.type === "chunk" && chunk.isEntry,
 	) as OutputChunk;
+
+	// rename glsl attributes / uniforms
+	jsCode = mangleGlslVariable(jsCode);
 
 	// minify with terser
 	{
