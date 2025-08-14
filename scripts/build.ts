@@ -91,8 +91,8 @@ export const build = async () => {
 
 	if (cssCode)
 		htmlContent = htmlContent.replace(
-			"<script",
-			`<style>${cssCode}</style><script`,
+			"</head>",
+			`<style>${cssCode}</style></head>`,
 		);
 
 	htmlContent = await minifyHtml(htmlContent, {

@@ -29,7 +29,7 @@ export const mangleGlslVariable = (jsCode: string) => {
 				jsCode.matchAll(
 					/(in|out|uniform)\s+(float|vec2|vec3|vec4|mat4|mat3|int|ivec2|ivec3|ivec4)\s+(\w+)/g,
 				),
-			).map(([_0, _1, _2, v]) => v),
+			).map(([, , , v]) => v),
 		),
 	);
 
@@ -39,5 +39,8 @@ export const mangleGlslVariable = (jsCode: string) => {
 
 	const re = new RegExp(`\\W(` + variableNames.join("|") + `)\\W`, "g");
 
-	return jsCode.replaceAll(re, (a, v) => a.replace(v, map.get(v)!));
+	return jsCode
+		.replaceAll(re, (a, v) => a.replace(v, map.get(v)!))
+		.replaceAll(re, (a, v) => a.replace(v, map.get(v)!))
+		.replaceAll(re, (a, v) => a.replace(v, map.get(v)!));
 };
