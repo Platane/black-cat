@@ -1,0 +1,22 @@
+{
+	"name": "@platane/black-cat",
+	"repository": "github:platane/black-cat",
+	"dependencies": {
+		"gl-matrix": "3.4.4"
+	},
+	"devDependencies": {
+		"rollup-pluginutils": "2.8.2",
+		"@biomejs/biome": "2.2.0",
+		"@types/bun": "1.2.20",
+		"@types/html-minifier-terser": "7.0.2",
+		"typescript": "5.9.2",
+		"typescript-plugin-css-modules": "5.2.0",
+		"@rollup/plugin-commonjs": "28.0.6",
+		"rollup-plugin-esbuild": "6.2.1",
+		"@rollup/plugin-node-resolve": "16.0.1",
+		"html-minifier-terser": "7.2.0",
+		"terser": "5.43.1",
+		"vite": "7.1.2",
+		"rollup": "4.46.2"
+	}
+}

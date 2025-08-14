@@ -1,0 +1,30 @@
+name: main
+
+on: [push]
+
+jobs:
+  main:
+    permissions:
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+
+      - run: bun install --frozen-lockfile
+
+      - run: bunx tsc
+
+      - run: bun scripts/build
+
+      - run: sudo apt-get install -y advancecomp
+
+      - run: bun scripts/bundle
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - uses: actions/deploy-pages@v4

@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+		"module": "ESNext",
+		"target": "ES2023",
+		"noEmit": true,
+		"lib": ["ES2024", "DOM"],
+		"allowSyntheticDefaultImports": true,
+		"types": ["vite/client", "node"],
+		"jsx": "preserve",
+		"strict": true,
+		"plugins": [{ "name": "typescript-plugin-css-modules" }]
+	},
+	"exclude": ["node_modules"]
+}
