@@ -42,7 +42,7 @@ export const createRenderer = (canvas: HTMLCanvasElement) => {
 		// update buffer
 		//
 		if (viewMatrix.generation !== world.camera.generation) {
-			mat4.lookAt(viewMatrix, world.camera.eye, world.camera.target, [0, 1, 0]);
+			mat4.lookAt(viewMatrix, world.camera.eye, world.camera.target, [0, 0, 1]);
 			viewMatrix.generation = world.camera.generation;
 		}
 
