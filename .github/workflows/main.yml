@@ -25,6 +25,15 @@ jobs:
 
       - run: bun scripts/bundle
 
+      - run: |
+          echo '<!DOCTYPE html><html><body><ul>' > dist/demo/index.html
+          for FILE in $( ls demo )
+          do
+            bunx vite build demo/$FILE --base "./" --minify false --outDir ../../dist/demo/$FILE
+            echo "<li><a href=\"$FILE/\">$FILE</a></li>" >> dist/demo/index.html
+          done
+          echo "</ul></body></html>" >> dist/demo/index.html
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
