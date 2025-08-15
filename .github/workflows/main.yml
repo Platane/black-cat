@@ -25,7 +25,9 @@ jobs:
 
       - run: bun scripts/bundle
 
-      - run: |
+      - name: build demos
+        run: |
+          touch dist/demo/index.html
           echo '<!DOCTYPE html><html><body><ul>' > dist/demo/index.html
           for FILE in $( ls demo )
           do
