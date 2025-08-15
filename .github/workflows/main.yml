@@ -27,7 +27,7 @@ jobs:
 
       - name: build demos
         run: |
-          touch dist/demo/index.html
+          mkdir dist/demo -p
           echo '<!DOCTYPE html><html><body><ul>' > dist/demo/index.html
           for FILE in $( ls demo )
           do
