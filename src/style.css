@@ -2,6 +2,10 @@ body {
 	margin: 0;
 	height: 100vh;
 }
+html {
+	user-select: none;
+	overscroll-behavior: none;
+}
 #canvas {
 	position: absolute;
 	width: 100%;
