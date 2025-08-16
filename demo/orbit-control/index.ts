@@ -12,7 +12,7 @@ const bufferSet = materialMeshColored.createBufferSet();
 
 materialMeshColored.updateBufferSet(bufferSet, cube);
 
-const viewMatrix = Object.assign(new Float32Array(16), { generation: 0 });
+const viewMatrix = Object.assign(new Float32Array(16));
 const projectionMatrix = new Float32Array(16);
 
 const camera = { eye: [1, 10, 12], target: [0, 0, 0] };

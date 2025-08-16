@@ -2,6 +2,7 @@
 	"name": "@platane/black-cat",
 	"repository": "github:platane/black-cat",
 	"dependencies": {
+		"hash-int": "1.0.0",
 		"gl-matrix": "3.4.4"
 	},
 	"devDependencies": {

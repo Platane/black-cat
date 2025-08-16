@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>🧪 chunk mesh</title>
+  </head>
+  <style>
+  #canvas {
+      aspect-ratio: 1;
+      width: 100%;
+      max-width: min( 100vh - 50px, 1200px );
+      border: solid 1px #ccc;
+  }
+  #range{
+      width:100%
+  }
+  </style>
+  <body>
+    <canvas id="canvas"></canvas>
+    <input id="range" type="range" step="1" min="0" max="0"/>
+    <script type="module" src="./index.ts"></script>
+  </body>
+</html>

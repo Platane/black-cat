@@ -14,6 +14,13 @@ const world: World = {
 		type: "keyboard_mouse",
 		keydown: new Set(),
 	},
+	ground: {
+		chunkSize: 9,
+		chunkHeight: 9,
+		sizeInChunk: 0,
+		chunks: [],
+		generation: 1,
+	},
 };
 
 createEventListeners(world);
