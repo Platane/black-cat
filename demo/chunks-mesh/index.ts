@@ -24,7 +24,7 @@ const chunksBuffer = createChunksBuffer();
 const viewMatrix = Object.assign(new Float32Array(16));
 const projectionMatrix = new Float32Array(16);
 
-const camera = { eye: [1, 10, 12], target: [100, 100, 0] };
+const camera = { eye: [1, 10, 12], target: [10, 10, 0] };
 mat4.lookAt(viewMatrix, camera.eye, camera.target, [0, 0, 1]);
 
 window.onresize = () => {
@@ -57,9 +57,9 @@ createOrbitControl({ canvas }, camera, () => {
 });
 
 const ground: World["ground"] = {
-	sizeInChunk: 16,
-	chunkHeight: 3,
-	chunkSize: 16,
+	sizeInChunk: 12,
+	chunkHeight: 10,
+	chunkSize: 8,
 	chunks: [],
 	generation: 1,
 };
@@ -80,6 +80,28 @@ for (let k = ground.sizeInChunk ** 2; k--; ) {
 	});
 }
 
+const stack = () => {
+	const chunk = ground.chunks[Math.floor(Math.random() * ground.chunks.length)];
+
+	const x = Math.floor(Math.random() * ground.chunkSize);
+	const y = Math.floor(Math.random() * ground.chunkSize);
+
+	let h = 0;
+	while (
+		h + 1 < ground.chunkHeight &&
+		chunk.grid[(x + y * ground.chunkSize) * ground.chunkHeight + h] !==
+			voxel.empty
+	)
+		h++;
+
+	chunk.grid[(x + y * ground.chunkSize) * ground.chunkHeight + h] =
+		voxel.sand_cube;
+
+	chunk.generation++;
+
+	ground.generation++;
+};
+
 const loop = () => {
 	//
 	// render
@@ -94,6 +116,8 @@ const loop = () => {
 		objectMatrix,
 		bufferSet,
 	);
+
+	stack();
 
 	if (chunksBuffer.generation !== ground.generation) {
 		chunksBuffer.update(ground);

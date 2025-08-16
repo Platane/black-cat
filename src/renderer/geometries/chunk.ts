@@ -104,10 +104,17 @@ export const generateChunkHull = (
 		y < chunkSize &&
 		z >= 0 &&
 		z < chunkHeight;
+
 	const getVoxel = (x: number, y: number, z: number) =>
 		isInside(x, y, z)
 			? grid[(x + y * chunkSize) * chunkHeight + z]
 			: voxel.empty;
+
+	const color: [number, number, number] = [
+		Math.random(),
+		Math.random(),
+		Math.random(),
+	];
 
 	for (let x = chunkSize; x--; )
 		for (let y = chunkSize; y--; ) {
@@ -117,11 +124,7 @@ export const generateChunkHull = (
 
 				const voxelHash = hash((x + y * chunkSize) * chunkHeight + z + seed);
 
-				const color: [number, number, number] = [
-					0.7,
-					0.8,
-					0.3 + ((voxelHash % 12) / 12) * 0.5,
-				];
+				color[2] = 0.3 + ((voxelHash % 12) / 12) * 0.5;
 
 				if (getVoxel(x, y, z + 1) === voxel.empty)
 					pushFace(
