@@ -3,7 +3,7 @@ import { World } from "../../state/world/type";
 import { generateChunkHull } from "./chunk";
 
 export const createChunksBuffer = () => {
-	const buffer = new Float32Array(1_000_000);
+	const buffer = new Float32Array(10_000_000);
 
 	const v = vec3.create();
 	const s = [1, 1, 0.6];
