@@ -62,7 +62,13 @@ export const createMaterialGround = (gl: WebGL2RenderingContext) => {
 		nVertices: number,
 	) => {
 		gl.bindBuffer(gl.ARRAY_BUFFER, set.buffer);
-		gl.bufferData(gl.ARRAY_BUFFER, interleaved, gl.STATIC_DRAW);
+		gl.bufferData(
+			gl.ARRAY_BUFFER,
+			interleaved,
+			gl.STATIC_DRAW,
+			0,
+			nVertices * 9,
+		);
 		set.nVertices = nVertices;
 	};
 

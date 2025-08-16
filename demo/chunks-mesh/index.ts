@@ -1,10 +1,11 @@
 import { mat4 } from "gl-matrix";
 import { generateChunkHull } from "../../src/renderer/geometries/chunk";
+import { createChunksBuffer } from "../../src/renderer/geometries/chunksBuffer";
 import { cube } from "../../src/renderer/geometries/cube";
 import { createMaterialColored } from "../../src/renderer/materials/meshColored";
 import { createMaterialGround } from "../../src/renderer/materials/meshGround";
 import { createOrbitControl } from "../../src/state/systems/orbitCamera";
-import { Chunk, ChunkInfo, voxel } from "../../src/state/world/type";
+import { Chunk, ChunkInfo, voxel, World } from "../../src/state/world/type";
 import { createRandom } from "../../src/utils/random";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -13,16 +14,17 @@ const gl = canvas.getContext("webgl2")!;
 
 const materialMeshColored = createMaterialColored(gl);
 const bufferSet = materialMeshColored.createBufferSet();
+materialMeshColored.updateBufferSet(bufferSet, cube);
 
 const materialMeshGround = createMaterialGround(gl);
 const bufferSetGround = materialMeshGround.createBufferSet();
 
-materialMeshColored.updateBufferSet(bufferSet, cube);
+const chunksBuffer = createChunksBuffer();
 
 const viewMatrix = Object.assign(new Float32Array(16));
 const projectionMatrix = new Float32Array(16);
 
-const camera = { eye: [1, 10, 12], target: [0, 0, 0] };
+const camera = { eye: [1, 10, 12], target: [100, 100, 0] };
 mat4.lookAt(viewMatrix, camera.eye, camera.target, [0, 0, 1]);
 
 window.onresize = () => {
@@ -54,6 +56,30 @@ createOrbitControl({ canvas }, camera, () => {
 	mat4.lookAt(viewMatrix, camera.eye, camera.target, [0, 0, 1]);
 });
 
+const ground: World["ground"] = {
+	sizeInChunk: 16,
+	chunkHeight: 3,
+	chunkSize: 16,
+	chunks: [],
+	generation: 1,
+};
+for (let k = ground.sizeInChunk ** 2; k--; ) {
+	const grid = new Uint8Array(
+		Array.from({ length: ground.chunkSize ** 2 }).flatMap(() => {
+			const a = Array.from({ length: ground.chunkHeight }, () => voxel.empty);
+
+			a[0] = voxel.sand_cube;
+			if (Math.random() > 0.9) a[1] = voxel.sand_cube;
+
+			return a;
+		}),
+	);
+	ground.chunks.push({
+		grid,
+		generation: 1,
+	});
+}
+
 const loop = () => {
 	//
 	// render
@@ -61,7 +87,7 @@ const loop = () => {
 
 	const objectMatrix = new Float32Array(16);
 	mat4.identity(objectMatrix);
-	mat4.scale(objectMatrix, objectMatrix, [0.1, 0.1, 0.1]);
+	mat4.scale(objectMatrix, objectMatrix, [0.5, 0.5, 0.5]);
 	materialMeshColored.render(
 		projectionMatrix,
 		viewMatrix,
@@ -69,58 +95,17 @@ const loop = () => {
 		bufferSet,
 	);
 
+	if (chunksBuffer.generation !== ground.generation) {
+		chunksBuffer.update(ground);
+		materialMeshGround.updateBufferSet(
+			bufferSetGround,
+			chunksBuffer.buffer,
+			chunksBuffer.nVertices,
+		);
+	}
+
 	materialMeshGround.render(projectionMatrix, viewMatrix, bufferSetGround);
 
 	requestAnimationFrame(loop);
 };
 loop();
-
-const input = document.getElementById("range") as HTMLInputElement;
-input.addEventListener("input", () => {
-	const u = new URL(window.location.href);
-	u.searchParams.set("chunk", input.value);
-	history.replaceState(null, "", u);
-
-	const c = chunks[parseInt(input.value)];
-	const b = new Float32Array(1000_000);
-
-	const nVertices = generateChunkHull(b, 0, c.grid, c, [0, 0, 0], [1, 1, 0.5]);
-
-	materialMeshGround.updateBufferSet(bufferSetGround, b, nVertices);
-});
-
-const chunks = [
-	{
-		grid: new Uint8Array([voxel.empty]),
-		chunkSize: 1,
-		chunkHeight: 1,
-	},
-	{
-		grid: new Uint8Array([voxel.sand_cube]),
-		chunkSize: 1,
-		chunkHeight: 1,
-	},
-	(() => {
-		const chunkSize = 5;
-		const chunkHeight = 3;
-		const random = createRandom();
-		const grid = new Uint8Array(
-			Array.from({ length: chunkSize * chunkSize }).flatMap(() => {
-				const a = Array.from({ length: chunkHeight }, () => voxel.empty);
-
-				for (let h = Math.ceil(random() * chunkHeight); h--; ) {
-					a[h] = voxel.sand_cube;
-				}
-
-				return a;
-			}),
-		);
-		return { chunkHeight, chunkSize, grid };
-	})(),
-] satisfies (Pick<Chunk, "grid"> & ChunkInfo)[];
-
-input.max = chunks.length - 1 + "";
-input.value =
-	new URLSearchParams(window.location.search).get("chunk") ||
-	chunks.length - 1 + "";
-input.dispatchEvent(new Event("input"));
