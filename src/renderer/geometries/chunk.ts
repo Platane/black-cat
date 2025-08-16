@@ -1,7 +1,7 @@
 import { vec3 } from "gl-matrix";
 // @ts-ignore
 import hash from "hash-int";
-import { Chunk, ChunkInfo } from "../../state/world/type";
+import { Chunk, ChunkInfo, voxel } from "../../state/world/type";
 
 // vertex array interlaced
 // position.x,
@@ -20,6 +20,7 @@ export const generateChunkHull = (
 	{ chunkHeight, chunkSize }: ChunkInfo,
 	translation: vec3,
 	scale: vec3,
+	seed: number = 123133,
 ): number => {
 	let i = 0; // vertex count
 	const pushFace = (
@@ -96,43 +97,172 @@ export const generateChunkHull = (
 		i++;
 	};
 
+	const isInside = (x: number, y: number, z: number) =>
+		x >= 0 &&
+		x < chunkSize &&
+		y >= 0 &&
+		y < chunkSize &&
+		z >= 0 &&
+		z < chunkHeight;
+	const getVoxel = (x: number, y: number, z: number) =>
+		isInside(x, y, z)
+			? grid[(x + y * chunkSize) * chunkHeight + z]
+			: voxel.empty;
+
 	for (let x = chunkSize; x--; )
 		for (let y = chunkSize; y--; ) {
-			for (let h = chunkHeight; h--; ) {
-				const voxel = grid[(x + y * chunkSize) * chunkHeight + h];
-				if (voxel) {
-					const voxelHash = hash((x + y * chunkSize) * chunkHeight + h + 8423);
+			for (let z = chunkHeight; z--; ) {
+				const v = grid[(x + y * chunkSize) * chunkHeight + z];
+				if (v === voxel.empty) continue;
+
+				const voxelHash = hash((x + y * chunkSize) * chunkHeight + z + seed);
+
+				const color: [number, number, number] = [
+					0.7,
+					0.8,
+					0.3 + ((voxelHash % 12) / 12) * 0.5,
+				];
+
+				if (getVoxel(x, y, z + 1) === voxel.empty)
 					pushFace(
 						//
 						translation[0] + (x + 0) * scale[0],
 						translation[1] + (y + 0) * scale[1],
-						translation[2] + h * scale[2],
+						translation[2] + (z + 1) * scale[2],
 
 						translation[0] + (x + 1) * scale[0],
 						translation[1] + (y + 0) * scale[1],
-						translation[2] + h * scale[2],
+						translation[2] + (z + 1) * scale[2],
 
 						translation[0] + (x + 1) * scale[0],
 						translation[1] + (y + 1) * scale[1],
-						translation[2] + h * scale[2],
+						translation[2] + (z + 1) * scale[2],
 
 						translation[0] + (x + 0) * scale[0],
 						translation[1] + (y + 1) * scale[1],
-						translation[2] + h * scale[2],
+						translation[2] + (z + 1) * scale[2],
 
 						0,
 						0,
 						1,
 
-						0.7,
-						0.8,
-						0.3 + ((voxelHash % 12) / 12) * 0.5,
+						...color,
 					);
 
-					break;
-				}
+				if (getVoxel(x + 1, y, z) === voxel.empty)
+					pushFace(
+						//
+						translation[0] + (x + 1) * scale[0],
+						translation[1] + (y + 0) * scale[1],
+						translation[2] + (z + 0) * scale[2],
+
+						translation[0] + (x + 1) * scale[0],
+						translation[1] + (y + 1) * scale[1],
+						translation[2] + (z + 0) * scale[2],
+
+						translation[0] + (x + 1) * scale[0],
+						translation[1] + (y + 1) * scale[1],
+						translation[2] + (z + 1) * scale[2],
+
+						translation[0] + (x + 1) * scale[0],
+						translation[1] + (y + 0) * scale[1],
+						translation[2] + (z + 1) * scale[2],
+
+						1,
+						0,
+						0,
+
+						...color,
+					);
+
+				if (getVoxel(x - 1, y, z) === voxel.empty)
+					pushFace(
+						//
+						translation[0] + (x + 0) * scale[0],
+						translation[1] + (y + 0) * scale[1],
+						translation[2] + (z + 0) * scale[2],
+
+						translation[0] + (x + 0) * scale[0],
+						translation[1] + (y + 0) * scale[1],
+						translation[2] + (z + 1) * scale[2],
+
+						translation[0] + (x + 0) * scale[0],
+						translation[1] + (y + 1) * scale[1],
+						translation[2] + (z + 1) * scale[2],
+
+						translation[0] + (x + 0) * scale[0],
+						translation[1] + (y + 1) * scale[1],
+						translation[2] + (z + 0) * scale[2],
+
+						-1,
+						0,
+						0,
+
+						...color,
+					);
+
+				if (getVoxel(x, y - 1, z) === voxel.empty)
+					pushFace(
+						//
+						translation[0] + (x + 0) * scale[0],
+						translation[1] + (y + 0) * scale[1],
+						translation[2] + (z + 0) * scale[2],
+
+						translation[0] + (x + 1) * scale[0],
+						translation[1] + (y + 0) * scale[1],
+						translation[2] + (z + 0) * scale[2],
+
+						translation[0] + (x + 1) * scale[0],
+						translation[1] + (y + 0) * scale[1],
+						translation[2] + (z + 1) * scale[2],
+
+						translation[0] + (x + 0) * scale[0],
+						translation[1] + (y + 0) * scale[1],
+						translation[2] + (z + 1) * scale[2],
+
+						0,
+						-1,
+						0,
+
+						...color,
+					);
+
+				if (getVoxel(x, y + 1, z) === voxel.empty)
+					pushFace(
+						//
+						translation[0] + (x + 0) * scale[0],
+						translation[1] + (y + 1) * scale[1],
+						translation[2] + (z + 0) * scale[2],
+
+						translation[0] + (x + 0) * scale[0],
+						translation[1] + (y + 1) * scale[1],
+						translation[2] + (z + 1) * scale[2],
+
+						translation[0] + (x + 1) * scale[0],
+						translation[1] + (y + 1) * scale[1],
+						translation[2] + (z + 1) * scale[2],
+
+						translation[0] + (x + 1) * scale[0],
+						translation[1] + (y + 1) * scale[1],
+						translation[2] + (z + 0) * scale[2],
+
+						0,
+						1,
+						0,
+
+						...color,
+					);
 			}
 		}
 
 	return i;
 };
+
+const directions = [
+	[0, 0, 1],
+	[0, 0, -1],
+	[0, 1, 0],
+	[0, -1, 0],
+	[1, 0, 0],
+	[-1, 0, 0],
+] satisfies [number, number, number][];

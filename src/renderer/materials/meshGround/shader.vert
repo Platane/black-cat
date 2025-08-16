@@ -8,10 +8,10 @@ uniform mat4 u_projectionMatrix;
 uniform mat4 u_viewMatrix;
 
 out vec3 v_color;
-out vec3 v_normal;
+out vec3 v_worldNormal;
 
 void main() {
     gl_Position = u_projectionMatrix * u_viewMatrix * a_position;
     v_color = a_color;
-    v_normal = a_normal;
+    v_worldNormal = a_normal;
 }
