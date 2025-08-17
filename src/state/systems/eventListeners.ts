@@ -43,6 +43,16 @@ export const createEventListeners = (
 	window.oncontextmenu = (e) => {
 		e.preventDefault();
 	};
+
+	window.onresize = () => {
+		const dpr = Math.min(window.devicePixelRatio ?? 1, 2);
+
+		world.viewportSize[0] = containerElement.clientWidth * dpr;
+		world.viewportSize[1] = containerElement.clientHeight * dpr;
+
+		world.viewportSize.generation++;
+	};
+	(window.onresize as any)();
 };
 
 const keyMap = {

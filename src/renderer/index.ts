@@ -2,6 +2,7 @@ import { mat4 } from "gl-matrix";
 import { World } from "../state/world/type";
 import { cube } from "./geometries/cube";
 import { createMaterialColored } from "./materials/meshColored";
+import { createMaterialGround } from "./materials/meshGround";
 
 export const createRenderer = (canvas: HTMLCanvasElement) => {
 	const gl = canvas.getContext("webgl2")!;
@@ -9,24 +10,12 @@ export const createRenderer = (canvas: HTMLCanvasElement) => {
 	const materialMeshColored = createMaterialColored(gl);
 	const bufferSet = materialMeshColored.createBufferSet();
 
-	const viewMatrix = Object.assign(new Float32Array(16), { generation: 0 });
-	const projectionMatrix = new Float32Array(16);
+	const materialMeshGround = createMaterialGround(gl);
+	const groundBuffer = Object.assign(materialMeshGround.createBufferSet(), {
+		generation: 0,
+	});
 
-	window.onresize = () => {
-		const dpr = Math.min(window.devicePixelRatio ?? 1, 2);
-		canvas.width = canvas.clientWidth * dpr;
-		canvas.height = canvas.clientHeight * dpr;
-
-		const aspect = canvas.width / canvas.height;
-		const near = 0.1;
-		const far = 2000;
-		const fovY = Math.PI / 4;
-
-		mat4.perspective(projectionMatrix, fovY, aspect, near, far);
-
-		gl.viewport(0, 0, canvas.width, canvas.height);
-	};
-	(window.onresize as any)();
+	let viewportGeneration = 0;
 
 	gl.enable(gl.CULL_FACE);
 	gl.cullFace(gl.BACK);
@@ -41,9 +30,19 @@ export const createRenderer = (canvas: HTMLCanvasElement) => {
 		//
 		// update buffer
 		//
-		if (viewMatrix.generation !== world.camera.generation) {
-			mat4.lookAt(viewMatrix, world.camera.eye, world.camera.target, [0, 0, 1]);
-			viewMatrix.generation = world.camera.generation;
+		if (viewportGeneration !== world.viewportSize.generation) {
+			canvas.width = world.viewportSize[0];
+			canvas.height = world.viewportSize[1];
+			gl.viewport(0, 0, world.viewportSize[0], world.viewportSize[1]);
+			viewportGeneration = world.viewportSize.generation;
+		}
+		if (groundBuffer.generation !== world.groundBuffer.generation) {
+			materialMeshGround.updateBufferSet(
+				groundBuffer,
+				world.groundBuffer.buffer,
+				world.groundBuffer.nVertices,
+			);
+			groundBuffer.generation = world.groundBuffer.generation;
 		}
 
 		//
@@ -53,10 +52,16 @@ export const createRenderer = (canvas: HTMLCanvasElement) => {
 		const objectMatrix = new Float32Array(16);
 		mat4.identity(objectMatrix);
 		materialMeshColored.render(
-			projectionMatrix,
-			viewMatrix,
+			world.projectionMatrix,
+			world.viewMatrix,
 			objectMatrix,
 			bufferSet,
+		);
+
+		materialMeshGround.render(
+			world.projectionMatrix,
+			world.viewMatrix,
+			groundBuffer,
 		);
 	};
 

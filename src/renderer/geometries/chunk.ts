@@ -1,7 +1,7 @@
 import { vec3 } from "gl-matrix";
 // @ts-ignore
 import hash from "hash-int";
-import { Chunk, ChunkInfo, voxel } from "../../state/world/type";
+import { Chunk, voxel } from "../../state/world/type";
 
 // vertex array interlaced
 // position.x,
@@ -17,7 +17,7 @@ export const generateChunkHull = (
 	out: Float32Array,
 	outOffset: number,
 	grid: Chunk["grid"],
-	{ chunkHeight, chunkSize }: ChunkInfo,
+	{ chunkHeight, chunkSize }: { chunkSize: number; chunkHeight: number },
 	translation: vec3,
 	scale: vec3,
 	seed: number = 123133,

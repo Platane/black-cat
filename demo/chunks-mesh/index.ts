@@ -1,10 +1,13 @@
 import { mat4 } from "gl-matrix";
 import { generateChunkHull } from "../../src/renderer/geometries/chunk";
-import { createChunksBuffer } from "../../src/renderer/geometries/chunksBuffer";
 import { cube } from "../../src/renderer/geometries/cube";
 import { createMaterialColored } from "../../src/renderer/materials/meshColored";
 import { createMaterialGround } from "../../src/renderer/materials/meshGround";
 import { createOrbitControl } from "../../src/state/systems/orbitCamera";
+import {
+	createGroundBuffer,
+	updateChunksBuffer,
+} from "../../src/state/systems/updateChunksBuffer";
 import { Chunk, ChunkInfo, voxel, World } from "../../src/state/world/type";
 import { createRandom } from "../../src/utils/random";
 
@@ -18,8 +21,6 @@ materialMeshColored.updateBufferSet(bufferSet, cube);
 
 const materialMeshGround = createMaterialGround(gl);
 const bufferSetGround = materialMeshGround.createBufferSet();
-
-const chunksBuffer = createChunksBuffer();
 
 const viewMatrix = Object.assign(new Float32Array(16));
 const projectionMatrix = new Float32Array(16);
@@ -63,6 +64,7 @@ const ground: World["ground"] = {
 	chunks: [],
 	generation: 1,
 };
+const groundBuffer = createGroundBuffer(ground);
 for (let k = ground.sizeInChunk ** 2; k--; ) {
 	const grid = new Uint8Array(
 		Array.from({ length: ground.chunkSize ** 2 }).flatMap(() => {
@@ -119,13 +121,14 @@ const loop = () => {
 
 	stack();
 
-	if (chunksBuffer.generation !== ground.generation) {
-		chunksBuffer.update(ground);
+	if (groundBuffer.generation !== ground.generation) {
+		updateChunksBuffer({ groundBuffer, ground } as any);
 		materialMeshGround.updateBufferSet(
 			bufferSetGround,
-			chunksBuffer.buffer,
-			chunksBuffer.nVertices,
+			groundBuffer.buffer,
+			groundBuffer.nVertices,
 		);
+		groundBuffer.generation = ground.generation;
 	}
 
 	materialMeshGround.render(projectionMatrix, viewMatrix, bufferSetGround);

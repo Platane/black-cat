@@ -117,7 +117,10 @@ const chunks = [
 		);
 		return { chunkHeight, chunkSize, grid };
 	})(),
-] satisfies (Pick<Chunk, "grid"> & ChunkInfo)[];
+] satisfies (Pick<Chunk, "grid"> & {
+	chunkSize: number;
+	chunkHeight: number;
+})[];
 
 input.max = chunks.length - 1 + "";
 input.value =

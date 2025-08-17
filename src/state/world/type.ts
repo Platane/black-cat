@@ -1,28 +1,71 @@
-import { vec3 } from "gl-matrix";
+import { vec2, vec3 } from "gl-matrix";
 
 export type World = {
 	time: number;
+	viewportSize: vec2 & WithGeneration;
 	camera: {
+		fovY: number;
+
+		near: number;
+		far: number;
+
 		eye: vec3;
 		target: vec3;
-		generation: number;
-	};
+	} & WithGeneration;
+
 	inputs: {
 		type: "keyboard_mouse" | "gamepad" | "mobile";
 		keydown: Set<Key>;
 	};
 
 	ground: Ground;
+
+	// derived from the ground
+	groundBuffer: GroundBuffer;
+
+	// derived from the camera
+	viewMatrix: Float32Array & WithGeneration;
+
+	// updated on resize
+	projectionMatrix: Float32Array & WithGeneration;
+};
+
+export type GroundBuffer = {
+	// as interlaced vertex buffer
+	// position.x,
+	// position.y,
+	// position.z,
+	// normal.x,
+	// normal.y,
+	// normal.z,
+	// color.r,
+	// color.g,
+	// color.b,
+	buffer: Float32Array;
+
+	nVertices: number;
+
+	// for each chunk, in the order of the buffer
+	// j * 3 + 0 = index of chunk in ground.chunks
+	// j * 3 + 1 = generation of chunk
+	// j * 3 + 2 = length in vertices
+	chunkIndices: Uint16Array;
+
+	generation: number;
+};
+
+type WithGeneration = {
+	generation: number;
 };
 
 export type ChunkInfo = {
 	chunkSize: number;
 	chunkHeight: number;
+
+	sizeInChunk: number;
 };
 
 export type Ground = {
-	sizeInChunk: number;
-
 	// indexed by [ x + y * sizeInChunk ]
 	chunks: Chunk[];
 
