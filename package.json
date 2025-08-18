@@ -6,6 +6,8 @@
 		"gl-matrix": "3.4.4"
 	},
 	"devDependencies": {
+		"@types/google-closure-compiler": "20231112.0.0",
+		"google-closure-compiler": "20250813.0.0",
 		"rollup-plugin-import-css": "4.0.2",
 		"rollup-pluginutils": "2.8.2",
 		"@biomejs/biome": "2.2.0",
@@ -19,6 +21,6 @@
 		"html-minifier-terser": "7.2.0",
 		"terser": "5.43.1",
 		"vite": "7.1.2",
-		"rollup": "4.46.2"
+		"rollup": "4.46.3"
 	}
 }

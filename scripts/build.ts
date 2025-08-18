@@ -1,7 +1,9 @@
 import { execFileSync } from "node:child_process";
 import * as fs from "node:fs";
+import * as os from "node:os";
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
+import { compiler as Compiler } from "google-closure-compiler";
 import { minify as minifyHtml } from "html-minifier-terser";
 import { OutputChunk, rollup } from "rollup";
 import esbuild from "rollup-plugin-esbuild";
@@ -52,6 +54,25 @@ export const build = async () => {
 
 	// rename glsl attributes / uniforms
 	jsCode = mangleGlslVariable(jsCode);
+
+	// clojure compiler optimization
+	{
+		const tmpDir = os.tmpdir() + "/black-cat-build/";
+		fs.mkdirSync(tmpDir, { recursive: true });
+		fs.writeFileSync(tmpDir + "/index.js", jsCode);
+		const compiler = new Compiler({
+			js: tmpDir + "/index.js",
+			js_output_file: tmpDir + "/index.min.js",
+			compilation_level: "ADVANCED",
+		});
+		await new Promise<string>((resolve, reject) =>
+			compiler.run((exitCode, stdout, stderr) =>
+				exitCode ? reject(stderr) : resolve(stdout),
+			),
+		);
+
+		jsCode = fs.readFileSync(tmpDir + "/index.min.js", "utf8");
+	}
 
 	// minify with terser
 	{
