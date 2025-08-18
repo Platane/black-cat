@@ -132,11 +132,11 @@ export const build = async () => {
 	// inject footer
 	htmlContent = htmlContent.replace(
 		"</body>",
-		"<footer>" +
+		'<footer style="position:absolute;bottom:2px;right:4px;font-family:monospace">' +
 			`${sizeStr} ` +
 			`<a href="${"bundle.zip"}">bundle.zip</a>` +
 			" " +
-			`<a href="${pkg.repository.replace("github:", "https://github.com/")}">gitHub</a>` +
+			`<a href="${pkg.repository.replace("github:", "https://github.com/")}">github</a>` +
 			"</footer>" +
 			"</body>",
 	);
