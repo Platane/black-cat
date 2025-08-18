@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import * as fs from "node:fs";
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
@@ -6,6 +7,7 @@ import { OutputChunk, rollup } from "rollup";
 import esbuild from "rollup-plugin-esbuild";
 import css from "rollup-plugin-import-css";
 import { minify as minifyJs } from "terser";
+import pkg from "../package.json";
 import { mangleGlslVariable, minifyGlsl } from "./minifyGlsl";
 import { importAsset } from "./rollup-plugin-import-asset";
 
@@ -115,6 +117,30 @@ export const build = async () => {
 			fs.writeFileSync(distDir + a.fileName, a.source);
 		}
 	}
+
+	// zip
+	execFileSync("advzip", [
+		"--add",
+		"--shrink-insane",
+		distDir + "bundle.zip",
+		...fs.readdirSync(distDir).map((f) => distDir + f),
+	]);
+	const size = fs.statSync(distDir + "bundle.zip").size;
+	const sizeStr = (size / 1024).toFixed(2) + "K";
+	console.log(sizeStr);
+
+	// inject footer
+	htmlContent = htmlContent.replace(
+		"</body>",
+		"<footer>" +
+			`${sizeStr} ` +
+			`<a href="${"bundle.zip"}">bundle.zip</a>` +
+			" " +
+			`<a href="${pkg.repository.replace("github:", "https://github.com/")}">gitHub</a>` +
+			"</footer>" +
+			"</body>",
+	);
+	fs.writeFileSync(distDir + "index.html", htmlContent);
 };
 
 build();
