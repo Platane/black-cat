@@ -55,6 +55,24 @@ export const build = async () => {
 	// rename glsl attributes / uniforms
 	jsCode = mangleGlslVariable(jsCode);
 
+	// replace enum values
+	{
+		const values = [
+			"arrow_up",
+			"arrow_left",
+			"arrow_right",
+			"arrow_down",
+			"primary",
+			"secondary",
+
+			"keyboard_mouse",
+			"gamepad",
+			"mobile",
+		];
+		const re = new RegExp(`"(${values.join("|")})"`, "g");
+		jsCode = jsCode.replace(re, (_, value) => values.indexOf(value).toString());
+	}
+
 	// clojure compiler optimization
 	{
 		const tmpDir = os.tmpdir() + "/black-cat-build/";

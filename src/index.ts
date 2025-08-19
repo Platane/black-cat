@@ -1,10 +1,13 @@
 import { createRenderer } from "./renderer";
 import { createEventListeners } from "./state/systems/eventListeners";
-import { updateCamera } from "./state/systems/updateCamera";
+import { updateCameraMatrix } from "./state/systems/updateCameraMatrix";
+import { updateCarDebugCubes } from "./state/systems/updateCarDebugCubes";
+import { updateCarLocomotion } from "./state/systems/updateCarLocomotion";
 import {
 	createGroundBuffer,
 	updateChunksBuffer,
 } from "./state/systems/updateChunksBuffer";
+import { updateFollowCamera } from "./state/systems/updateFollowCamera";
 import { ChunkInfo, voxel, World } from "./state/world/type";
 import "./style.css";
 import { create as createUiInfo } from "./ui/info";
@@ -13,7 +16,7 @@ const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const renderer = createRenderer(canvas);
 
 const groundInfo: ChunkInfo = {
-	chunkSize: 9,
+	chunkSize: 3,
 	chunkHeight: 1,
 	sizeInChunk: 1,
 };
@@ -25,13 +28,18 @@ const world: World = {
 		fovY: Math.PI / 5,
 		near: 0.1,
 		far: 1000,
-		eye: [2, 17, 15],
+		eye: [2, 17, 50],
 		target: [0, 0, 0],
 		generation: 1,
 	},
-	inputs: {
+	userInputs: {
 		type: "keyboard_mouse",
 		keydown: new Set(),
+	},
+	car: {
+		position: [0, 0, 0],
+		direction: [1, 0],
+		rotation: [0, 0, 0, 1],
 	},
 	ground: {
 		...groundInfo,
@@ -51,6 +59,8 @@ const world: World = {
 	groundBuffer: createGroundBuffer(groundInfo),
 	viewMatrix: Object.assign(new Float32Array(16), { generation: 0 }),
 	projectionMatrix: Object.assign(new Float32Array(16), { generation: 0 }),
+
+	debugCubes: [],
 };
 
 createEventListeners(world);
@@ -63,12 +73,12 @@ const loop = () => {
 	//
 	world.time++;
 
-	// world.camera.eye[0] = Math.cos(Date.now() * 0.002) * 10;
-	// world.camera.eye[1] = Math.sin(Date.now() * 0.002) * 10;
-	// world.camera.generation++;
+	updateCarLocomotion(world);
+	updateFollowCamera(world);
 
-	updateCamera(world);
+	updateCameraMatrix(world);
 	updateChunksBuffer(world);
+	updateCarDebugCubes(world);
 
 	//
 	//

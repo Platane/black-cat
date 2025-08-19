@@ -1,4 +1,4 @@
-import { vec2, vec3 } from "gl-matrix";
+import { quat, vec2, vec3 } from "gl-matrix";
 
 export type World = {
 	time: number;
@@ -13,12 +13,20 @@ export type World = {
 		target: vec3;
 	} & WithGeneration;
 
-	inputs: {
+	userInputs: {
 		type: "keyboard_mouse" | "gamepad" | "mobile";
 		keydown: Set<Key>;
 	};
 
+	car: {
+		position: vec3;
+		rotation: quat;
+		direction: vec2;
+	};
+
 	ground: Ground;
+
+	debugCubes: Float32Array[];
 
 	// derived from the ground
 	groundBuffer: GroundBuffer;

@@ -49,14 +49,13 @@ export const createRenderer = (canvas: HTMLCanvasElement) => {
 		// render
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		const objectMatrix = new Float32Array(16);
-		mat4.identity(objectMatrix);
-		materialMeshColored.render(
-			world.projectionMatrix,
-			world.viewMatrix,
-			objectMatrix,
-			bufferSet,
-		);
+		for (const m of world.debugCubes)
+			materialMeshColored.render(
+				world.projectionMatrix,
+				world.viewMatrix,
+				m,
+				bufferSet,
+			);
 
 		materialMeshGround.render(
 			world.projectionMatrix,

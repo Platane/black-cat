@@ -2,7 +2,7 @@ import { mat4, vec3 } from "gl-matrix";
 import { World } from "../world/type";
 
 const up: vec3 = [0, 0, 1];
-export const updateCamera = (world: World) => {
+export const updateCameraMatrix = (world: World) => {
 	if (world.viewMatrix.generation !== world.camera.generation) {
 		mat4.lookAt(world.viewMatrix, world.camera.eye, world.camera.target, up);
 		world.viewMatrix.generation = world.camera.generation;

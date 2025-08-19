@@ -5,39 +5,39 @@ export const createEventListeners = (
 	world: World,
 	containerElement: HTMLElement = document.body,
 ) => {
-	world.inputs.type =
+	world.userInputs.type =
 		"ontouchstart" in document.documentElement ? "mobile" : "keyboard_mouse";
 
 	containerElement.onkeydown = (event) => {
 		const key = keyMap[event.key];
-		world.inputs.keydown.add(key);
+		world.userInputs.keydown.add(key);
 	};
 
 	containerElement.onkeyup = (event) => {
 		const key = keyMap[event.key];
-		world.inputs.keydown.delete(key);
+		world.userInputs.keydown.delete(key);
 	};
 
 	window.onblur = () => {
-		world.inputs.keydown.clear();
+		world.userInputs.keydown.clear();
 	};
 
 	window.onmousedown = (e) => {
-		if (world.inputs.type !== "keyboard_mouse") return;
+		if (world.userInputs.type !== "keyboard_mouse") return;
 
 		const key = ((e.button === 0 && "primary") ||
 			(e.button === 2 && "secondary")) as Key;
 
-		world.inputs.keydown.add(key);
+		world.userInputs.keydown.add(key);
 	};
 
 	window.onmouseup = (e) => {
-		if (world.inputs.type !== "keyboard_mouse") return;
+		if (world.userInputs.type !== "keyboard_mouse") return;
 
 		const key = ((e.button === 0 && "primary") ||
 			(e.button === 2 && "secondary")) as Key;
 
-		world.inputs.keydown.delete(key);
+		world.userInputs.keydown.delete(key);
 	};
 
 	window.oncontextmenu = (e) => {
