@@ -34,7 +34,7 @@ jobs:
           echo '<!DOCTYPE html><html><body><ul>' > dist/demo/index.html
           for FILE in $( ls demo )
           do
-            bunx vite build demo/$FILE --base "./" --minify false --outDir ../../dist/demo/$FILE
+            bunx vite build src/demo/$FILE --base "./" --minify false --outDir ../../../dist/demo/$FILE
             echo "<li><a href=\"$FILE/\">$FILE</a></li>" >> dist/demo/index.html
           done
           echo "</ul></body></html>" >> dist/demo/index.html

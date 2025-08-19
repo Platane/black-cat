@@ -1,15 +1,13 @@
 import { mat4 } from "gl-matrix";
-import { generateChunkHull } from "../../src/renderer/geometries/chunk";
-import { cube } from "../../src/renderer/geometries/cube";
-import { createMaterialColored } from "../../src/renderer/materials/meshColored";
-import { createMaterialGround } from "../../src/renderer/materials/meshGround";
-import { createOrbitControl } from "../../src/state/systems/orbitCamera";
+import { cube } from "../../renderer/geometries/cube";
+import { createMaterialColored } from "../../renderer/materials/meshColored";
+import { createMaterialGround } from "../../renderer/materials/meshGround";
+import { createOrbitControl } from "../../state/systems/orbitCamera";
 import {
 	createGroundBuffer,
 	updateChunksBuffer,
-} from "../../src/state/systems/updateChunksBuffer";
-import { Chunk, ChunkInfo, voxel, World } from "../../src/state/world/type";
-import { createRandom } from "../../src/utils/random";
+} from "../../state/systems/updateChunksBuffer";
+import { voxel, World } from "../../state/world/type";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 

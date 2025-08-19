@@ -1,7 +1,7 @@
 import { mat4 } from "gl-matrix";
-import { cube } from "../../src/renderer/geometries/cube";
-import { createMaterialColored } from "../../src/renderer/materials/meshColored";
-import { createOrbitControl } from "../../src/state/systems/orbitCamera";
+import { cube } from "../../renderer/geometries/cube";
+import { createMaterialColored } from "../../renderer/materials/meshColored";
+import { createOrbitControl } from "../../state/systems/orbitCamera";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 
