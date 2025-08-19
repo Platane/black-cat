@@ -19,9 +19,21 @@ export type World = {
 	};
 
 	car: {
+		steering: number;
+		steeringTarget: number;
+		steeringV: number;
+		throttle: number;
+		speed: number;
+
+		bones: {
+			worldPosition: vec3;
+			localTarget: vec3;
+			localPosition: vec3;
+			velocity: vec3;
+		}[];
+
 		position: vec3;
 		rotation: quat;
-		direction: vec2;
 	};
 
 	ground: Ground;

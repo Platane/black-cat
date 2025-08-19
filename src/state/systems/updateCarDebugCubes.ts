@@ -6,7 +6,7 @@ const v = vec3.create();
 const s = vec3.create();
 const q = quat.create();
 export const updateCarDebugCubes = (world: World) => {
-	while (world.debugCubes.length < 10)
+	while (world.debugCubes.length < 30)
 		world.debugCubes.push(new Float32Array(16));
 
 	vec3.copy(v, world.car.position);
@@ -36,8 +36,7 @@ export const updateCarDebugCubes = (world: World) => {
 	{
 		const wheel = world.debugCubes[2];
 		quat.identity(q);
-		const a = Math.atan2(world.car.direction[1], world.car.direction[0]);
-		quat.rotateZ(q, q, a);
+		quat.rotateZ(q, q, world.car.steering);
 		mat4.fromRotationTranslationScale(wheel, q, v, s);
 		mat4.multiply(wheel, m, wheel);
 	}
@@ -46,8 +45,7 @@ export const updateCarDebugCubes = (world: World) => {
 		const wheel = world.debugCubes[3];
 		v[1] *= -1;
 		quat.identity(q);
-		const a = Math.atan2(world.car.direction[1], world.car.direction[0]);
-		quat.rotateZ(q, q, a);
+		quat.rotateZ(q, q, world.car.steering);
 		mat4.fromRotationTranslationScale(wheel, q, v, s);
 		mat4.multiply(wheel, m, wheel);
 	}
@@ -76,7 +74,16 @@ export const updateCarDebugCubes = (world: World) => {
 		mat4.multiply(antenna, m, antenna);
 	}
 
+	for (const bone of world.car.bones) {
+		const b = world.debugCubes[10];
+		vec3.copy(v, bone.localPosition);
+		vec3.set(s, 0.1, 0.1, 0.1);
+		quat.identity(q);
+		mat4.fromRotationTranslationScale(b, q, v, s);
+		mat4.multiply(b, m, b);
+	}
+
 	{
-		mat4.identity(world.debugCubes[9]);
+		mat4.identity(world.debugCubes[29]);
 	}
 };

@@ -1,8 +1,12 @@
 import { createRenderer } from "./renderer";
 import { createEventListeners } from "./state/systems/eventListeners";
 import { updateCameraMatrix } from "./state/systems/updateCameraMatrix";
+import { updateCarBones } from "./state/systems/updateCarBones";
 import { updateCarDebugCubes } from "./state/systems/updateCarDebugCubes";
-import { updateCarLocomotion } from "./state/systems/updateCarLocomotion";
+import {
+	updateCarControl,
+	updateCarLocomotion,
+} from "./state/systems/updateCarLocomotion";
 import {
 	createGroundBuffer,
 	updateChunksBuffer,
@@ -38,8 +42,22 @@ const world: World = {
 		keydown: new Set(),
 	},
 	car: {
+		speed: 0,
+		steering: 0,
+		steeringTarget: 0,
+		steeringV: 0,
+		throttle: 0,
+
+		bones: [
+			{
+				worldPosition: [0, 0, 0],
+				localTarget: [0, 0, 2],
+				localPosition: [0, 0, 2],
+				velocity: [0, 0, 0],
+			},
+		],
+
 		position: [4, 4, 0],
-		direction: [1, 0],
 		rotation: [0, 0, 0, 1],
 	},
 	ground: {
@@ -91,8 +109,11 @@ const loop = () => {
 	//
 	world.time++;
 
+	updateCarControl(world);
 	updateCarLocomotion(world);
 	updateFollowCamera(world);
+
+	updateCarBones(world);
 
 	updateCameraMatrix(world);
 	updateChunksBuffer(world);
