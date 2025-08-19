@@ -5,6 +5,8 @@ import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import { compiler as Compiler } from "google-closure-compiler";
 import { minify as minifyHtml } from "html-minifier-terser";
+// @ts-ignore
+import { Packer } from "roadroller";
 import { OutputChunk, rollup } from "rollup";
 import esbuild from "rollup-plugin-esbuild";
 import css from "rollup-plugin-import-css";
@@ -73,6 +75,17 @@ export const build = async () => {
 		jsCode = jsCode.replace(re, (_, value) => values.indexOf(value).toString());
 	}
 
+	// simplify glmatrix
+	{
+		jsCode = jsCode
+			.replace(
+				`var ARRAY_TYPE = typeof Float32Array !== "undefined" ? Float32Array : Array;`,
+				"",
+			)
+			.replaceAll("ARRAY_TYPE", "Float32Array")
+			.replaceAll("Float32Array != Float32Array", "false");
+	}
+
 	// clojure compiler optimization
 	{
 		const tmpDir = os.tmpdir() + "/black-cat-build/";
@@ -114,6 +127,19 @@ export const build = async () => {
 			toplevel: true,
 		});
 		jsCode = out.code!;
+	}
+
+	// minify with roadroller
+	if (false) {
+		const packer = new Packer(
+			[{ data: jsCode, type: "js", action: "eval" }],
+			//
+			{ allowFreeVars: true, maxMemoryMB: 1024 },
+		);
+		await packer.optimize();
+
+		const { firstLine, secondLine } = packer.makeDecoder();
+		jsCode = firstLine + secondLine;
 	}
 
 	let cssCode = output

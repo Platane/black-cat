@@ -1,7 +1,6 @@
 import { vec3 } from "gl-matrix";
-// @ts-ignore
-import hash from "hash-int";
 import { Chunk, voxel } from "../../state/world/type";
+import { hashInt } from "../../utils/random";
 
 // vertex array interlaced
 // position.x,
@@ -122,7 +121,7 @@ export const generateChunkHull = (
 				const v = grid[(x + y * chunkSize) * chunkHeight + z];
 				if (v === voxel.empty) continue;
 
-				const voxelHash = hash((x + y * chunkSize) * chunkHeight + z + seed);
+				const voxelHash = hashInt((x + y * chunkSize) * chunkHeight + z + seed);
 
 				color[2] = 0.3 + ((voxelHash % 12) / 12) * 0.5;
 
