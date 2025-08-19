@@ -9,12 +9,12 @@ export const createEventListeners = (
 		"ontouchstart" in document.documentElement ? "mobile" : "keyboard_mouse";
 
 	containerElement.onkeydown = (event) => {
-		const key = keyMap[event.key];
+		const key = keyMap(event.key) as Key;
 		world.userInputs.keydown.add(key);
 	};
 
 	containerElement.onkeyup = (event) => {
-		const key = keyMap[event.key];
+		const key = keyMap(event.key) as Key;
 		world.userInputs.keydown.delete(key);
 	};
 
@@ -55,14 +55,13 @@ export const createEventListeners = (
 	(window.onresize as any)();
 };
 
-const keyMap = {
-	ArrowUp: "arrow_up",
-	ArrowDown: "arrow_down",
-	ArrowLeft: "arrow_left",
-	ArrowRight: "arrow_right",
-
-	w: "arrow_up",
-	s: "arrow_down",
-	a: "arrow_left",
-	d: "arrow_right",
-} as Record<string, Key>;
+const keyMap = (key: string) =>
+	(key == "ArrowUp" && "arrow_up") ||
+	(key == "ArrowDown" && "arrow_down") ||
+	(key == "ArrowLeft" && "arrow_left") ||
+	(key == "ArrowRight" && "arrow_right") ||
+	(key == "w" && "arrow_up") ||
+	(key == "s" && "arrow_down") ||
+	(key == "a" && "arrow_left") ||
+	(key == "d" && "arrow_right") ||
+	undefined;

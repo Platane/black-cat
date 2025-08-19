@@ -72,7 +72,9 @@ export const build = async () => {
 			"mobile",
 		];
 		const re = new RegExp(`"(${values.join("|")})"`, "g");
-		jsCode = jsCode.replace(re, (_, value) => values.indexOf(value).toString());
+		jsCode = jsCode.replace(re, (_, value) =>
+			(values.indexOf(value) + 1).toString(),
+		);
 	}
 
 	// simplify glmatrix
@@ -87,7 +89,7 @@ export const build = async () => {
 	}
 
 	// clojure compiler optimization
-	{
+	if (!false) {
 		const tmpDir = os.tmpdir() + "/black-cat-build/";
 		fs.mkdirSync(tmpDir, { recursive: true });
 		fs.writeFileSync(tmpDir + "/index.js", jsCode);
@@ -106,7 +108,7 @@ export const build = async () => {
 	}
 
 	// minify with terser
-	{
+	if (!false) {
 		const out = await minifyJs(jsCode, {
 			compress: {
 				keep_infinity: true,

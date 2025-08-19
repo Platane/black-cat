@@ -3,13 +3,17 @@ import fragmentShaderCode from "./shader.frag?raw";
 import vertexShaderCode from "./shader.vert?raw";
 
 export const createMaterialGround = (gl: WebGL2RenderingContext) => {
-	const program = createProgram(
-		gl,
-		vertexShaderCode,
-		fragmentShaderCode,
-		["u_projectionMatrix", "u_viewMatrix"],
-		["a_position", "a_normal", "a_color"],
+	const program = createProgram(gl, vertexShaderCode, fragmentShaderCode);
+
+	const u_projectionMatrix = gl.getUniformLocation(
+		program,
+		"u_projectionMatrix",
 	);
+	const u_viewMatrix = gl.getUniformLocation(program, "u_viewMatrix");
+
+	const a_position = gl.getAttribLocation(program, "a_position");
+	const a_normal = gl.getAttribLocation(program, "a_normal");
+	const a_color = gl.getAttribLocation(program, "a_color");
 
 	const createBufferSet = () => {
 		const vao = gl.createVertexArray();
@@ -25,9 +29,9 @@ export const createMaterialGround = (gl: WebGL2RenderingContext) => {
 
 	const linkBufferAttribute = (buffer: WebGLBuffer) => {
 		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-		gl.enableVertexAttribArray(program.a.a_position);
+		gl.enableVertexAttribArray(a_position);
 		gl.vertexAttribPointer(
-			program.a.a_position,
+			a_position,
 			3,
 			gl.FLOAT,
 			false,
@@ -35,25 +39,11 @@ export const createMaterialGround = (gl: WebGL2RenderingContext) => {
 			0 * 3 * 4,
 		);
 
-		gl.enableVertexAttribArray(program.a.a_normal);
-		gl.vertexAttribPointer(
-			program.a.a_normal,
-			3,
-			gl.FLOAT,
-			false,
-			3 * 3 * 4,
-			1 * 3 * 4,
-		);
+		gl.enableVertexAttribArray(a_normal);
+		gl.vertexAttribPointer(a_normal, 3, gl.FLOAT, false, 3 * 3 * 4, 1 * 3 * 4);
 
-		gl.enableVertexAttribArray(program.a.a_color);
-		gl.vertexAttribPointer(
-			program.a.a_color,
-			3,
-			gl.FLOAT,
-			false,
-			3 * 3 * 4,
-			2 * 3 * 4,
-		);
+		gl.enableVertexAttribArray(a_color);
+		gl.vertexAttribPointer(a_color, 3, gl.FLOAT, false, 3 * 3 * 4, 2 * 3 * 4);
 	};
 
 	const updateBufferSet = (
@@ -83,16 +73,12 @@ export const createMaterialGround = (gl: WebGL2RenderingContext) => {
 	) => {
 		gl.useProgram(program);
 
-		gl.uniformMatrix4fv(program.u.u_projectionMatrix, false, projectionMatrix);
-		gl.uniformMatrix4fv(program.u.u_viewMatrix, false, viewMatrix);
+		gl.uniformMatrix4fv(u_projectionMatrix, false, projectionMatrix);
+		gl.uniformMatrix4fv(u_viewMatrix, false, viewMatrix);
 
 		gl.bindVertexArray(vao);
 
 		gl.drawArrays(gl.TRIANGLES, 0, nVertices);
-	};
-
-	const dispose = () => {
-		gl.deleteProgram(program);
 	};
 
 	return {
@@ -101,6 +87,5 @@ export const createMaterialGround = (gl: WebGL2RenderingContext) => {
 		linkBufferAttribute,
 		updateBufferSet,
 		disposeBufferSet,
-		dispose,
 	};
 };
