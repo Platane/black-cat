@@ -169,7 +169,7 @@ export const generateChunkHull = (
 			: voxel.empty;
 
 	const processCube = (x: number, y: number, z: number) => {
-		// flat up
+		//  up
 		if (getVoxel(x, y, z + 1) === voxel.empty)
 			pushQuadFace(
 				//

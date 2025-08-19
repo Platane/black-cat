@@ -3,7 +3,7 @@ import { generateChunkHull } from "../../renderer/geometries/chunk";
 import { ChunkInfo, GroundBuffer, World } from "../world/type";
 
 const translation = vec3.create();
-const scale = [1, 1, 0.6];
+const scale = [1, 1, 0.8];
 export const updateChunksBufferBrute = (world: World) => {
 	if (world.groundBuffer.generation === world.ground.generation) return;
 
@@ -79,8 +79,8 @@ const updateOneChunk = (world: World, i: number) => {
 	const x = i % world.ground.sizeInChunk;
 	const y = Math.floor(i / world.ground.sizeInChunk);
 
-	translation[0] = x * world.ground.chunkSize;
-	translation[1] = y * world.ground.chunkSize;
+	translation[0] = x * world.ground.chunkSize + 0.5;
+	translation[1] = y * world.ground.chunkSize + 0.5;
 	const newLength = generateChunkHull(
 		world.groundBuffer.buffer,
 		end * 9,

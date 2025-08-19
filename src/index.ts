@@ -11,16 +11,17 @@ import { updateFollowCamera } from "./state/systems/updateFollowCamera";
 import { ChunkInfo, voxel, World } from "./state/world/type";
 import "./style.css";
 import { create as createUiInfo } from "./ui/info";
+import { createRandom } from "./utils/random";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const renderer = createRenderer(canvas);
 
 const groundInfo: ChunkInfo = {
-	chunkSize: 3,
-	chunkHeight: 1,
-	sizeInChunk: 1,
+	chunkSize: 8,
+	chunkHeight: 16,
+	sizeInChunk: 2,
 };
-
+const random = createRandom();
 const world: World = {
 	time: 1,
 	viewportSize: Object.assign([0, 0], { generation: 0 }),
@@ -37,23 +38,40 @@ const world: World = {
 		keydown: new Set(),
 	},
 	car: {
-		position: [0, 0, 0],
+		position: [4, 4, 0],
 		direction: [1, 0],
 		rotation: [0, 0, 0, 1],
 	},
 	ground: {
 		...groundInfo,
-		chunks: [
-			{
-				grid: new Uint8Array(
+		chunks: Array.from(
+			{ length: groundInfo.sizeInChunk * groundInfo.sizeInChunk },
+			() => {
+				const grid = new Uint8Array(
 					groundInfo.chunkSize *
 						groundInfo.chunkSize *
 						groundInfo.chunkHeight *
 						9,
-				).fill(voxel.sand_cube),
-				generation: 1,
+				);
+				for (let x = 0; x < groundInfo.chunkSize; x++) {
+					for (let z = 0; z < groundInfo.chunkSize; z++) {
+						grid[(x + z * groundInfo.chunkSize) * groundInfo.chunkHeight + 0] =
+							voxel.sand_cube;
+
+						if (random() < 0.07)
+							grid[
+								(x + z * groundInfo.chunkSize) * groundInfo.chunkHeight + 1
+							] = voxel.sand_slope_x_positive;
+
+						if (random() < 0.03)
+							grid[
+								(x + z * groundInfo.chunkSize) * groundInfo.chunkHeight + 1
+							] = voxel.rock_cube;
+					}
+				}
+				return { grid, generation: 1 };
 			},
-		],
+		),
 		generation: 1,
 	},
 	groundBuffer: createGroundBuffer(groundInfo),
