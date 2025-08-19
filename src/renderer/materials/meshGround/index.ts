@@ -10,6 +10,10 @@ export const createMaterialGround = (gl: WebGL2RenderingContext) => {
 		"u_projectionMatrix",
 	);
 	const u_viewMatrix = gl.getUniformLocation(program, "u_viewMatrix");
+	const u_directionalLight = gl.getUniformLocation(
+		program,
+		"u_directionalLight",
+	);
 
 	const a_position = gl.getAttribLocation(program, "a_position");
 	const a_normal = gl.getAttribLocation(program, "a_normal");
@@ -69,12 +73,14 @@ export const createMaterialGround = (gl: WebGL2RenderingContext) => {
 	const render = (
 		projectionMatrix: Float32Array,
 		viewMatrix: Float32Array,
+		directionalLight: Float32Array,
 		{ vao, nVertices }: ReturnType<typeof createBufferSet>,
 	) => {
 		gl.useProgram(program);
 
 		gl.uniformMatrix4fv(u_projectionMatrix, false, projectionMatrix);
 		gl.uniformMatrix4fv(u_viewMatrix, false, viewMatrix);
+		gl.uniform4fv(u_directionalLight, directionalLight);
 
 		gl.bindVertexArray(vao);
 

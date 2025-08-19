@@ -1,4 +1,4 @@
-import { mat4 } from "gl-matrix";
+import { mat4, vec3 } from "gl-matrix";
 import { generateChunkHull } from "../../renderer/geometries/chunk";
 import { cube } from "../../renderer/geometries/cube";
 import { createMaterialColored } from "../../renderer/materials/meshColored";
@@ -54,6 +54,8 @@ createOrbitControl({ canvas }, camera, () => {
 	mat4.lookAt(viewMatrix, camera.eye, camera.target, [0, 0, 1]);
 });
 
+const directionalLight = new Float32Array([0, 0, 1, 1]);
+
 const loop = () => {
 	//
 	// render
@@ -69,7 +71,17 @@ const loop = () => {
 		bufferSet,
 	);
 
-	materialMeshGround.render(projectionMatrix, viewMatrix, bufferSetGround);
+	directionalLight[0] = Math.cos(Date.now() / 1000);
+	directionalLight[2] = Math.sin(Date.now() / 1000);
+	directionalLight[1] = 1;
+	vec3.normalize(directionalLight, directionalLight);
+
+	materialMeshGround.render(
+		projectionMatrix,
+		viewMatrix,
+		directionalLight,
+		bufferSetGround,
+	);
 
 	requestAnimationFrame(loop);
 };
@@ -84,7 +96,7 @@ input.addEventListener("input", () => {
 	const c = chunks[parseInt(input.value)];
 	const b = new Float32Array(1000_000);
 
-	const nVertices = generateChunkHull(b, 0, c.grid, c, [0, 0, 0], [1, 1, 0.5]);
+	const nVertices = generateChunkHull(b, 0, c.grid, c, [0, 0, 0], [1, 1, 1]);
 
 	materialMeshGround.updateBufferSet(bufferSetGround, b, nVertices);
 });
@@ -96,8 +108,52 @@ const chunks = [
 		chunkHeight: 1,
 	},
 	{
+		grid: new Uint8Array([voxel.rock_cube]),
+		chunkSize: 1,
+		chunkHeight: 1,
+	},
+	{
 		grid: new Uint8Array([voxel.sand_cube]),
 		chunkSize: 1,
+		chunkHeight: 1,
+	},
+	{
+		grid: new Uint8Array([voxel.sand_slope_x_positive]),
+		chunkSize: 1,
+		chunkHeight: 1,
+	},
+	{
+		grid: new Uint8Array([
+			voxel.empty,
+			voxel.sand_slope_y_negative,
+			voxel.empty,
+
+			voxel.sand_slope_x_negative,
+			voxel.sand_cube,
+			voxel.sand_slope_x_positive,
+
+			voxel.empty,
+			voxel.sand_slope_y_positive,
+			voxel.empty,
+		]),
+		chunkSize: 3,
+		chunkHeight: 1,
+	},
+	{
+		grid: new Uint8Array([
+			voxel.empty,
+			voxel.sand_slope_y_positive,
+			voxel.empty,
+
+			voxel.sand_slope_x_positive,
+			voxel.sand_cube,
+			voxel.sand_slope_x_negative,
+
+			voxel.empty,
+			voxel.sand_slope_y_negative,
+			voxel.empty,
+		]),
+		chunkSize: 3,
 		chunkHeight: 1,
 	},
 	(() => {
@@ -108,8 +164,14 @@ const chunks = [
 			Array.from({ length: chunkSize * chunkSize }).flatMap(() => {
 				const a = Array.from({ length: chunkHeight }, () => voxel.empty);
 
-				for (let h = Math.ceil(random() * chunkHeight); h--; ) {
+				const h1 = Math.ceil(random() * chunkHeight)
+				for (let h = h1; h--; ) {
 					a[h] = voxel.sand_cube;
+				}
+
+				const h2 = Math.floor(random() * (h1+0.1))
+				for (let h = h2; h--; ) {
+					a[h] = voxel.rock_cube;
 				}
 
 				return a;

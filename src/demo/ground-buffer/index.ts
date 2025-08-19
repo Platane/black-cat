@@ -129,7 +129,14 @@ const loop = () => {
 		groundBuffer.generation = ground.generation;
 	}
 
-	materialMeshGround.render(projectionMatrix, viewMatrix, bufferSetGround);
+	const directionalLight = new Float32Array([0.615457, 0.492365, 0.615457, 1]);
+
+	materialMeshGround.render(
+		projectionMatrix,
+		viewMatrix,
+		directionalLight,
+		bufferSetGround,
+	);
 
 	requestAnimationFrame(loop);
 };

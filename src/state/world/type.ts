@@ -94,6 +94,7 @@ export const voxel = {
 	sand_slope_x_negative: 3,
 	sand_slope_y_positive: 4,
 	sand_slope_y_negative: 5,
+	rock_cube: 6,
 };
 
 export type Key =

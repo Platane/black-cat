@@ -26,6 +26,8 @@ export const createRenderer = (canvas: HTMLCanvasElement) => {
 	gl.enable(gl.BLEND);
 	gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
+	const directionalLight = new Float32Array([0.615457, 0.492365, 0.615457, 1]);
+
 	const render = (world: World) => {
 		//
 		// update buffer
@@ -60,6 +62,7 @@ export const createRenderer = (canvas: HTMLCanvasElement) => {
 		materialMeshGround.render(
 			world.projectionMatrix,
 			world.viewMatrix,
+			directionalLight,
 			groundBuffer,
 		);
 	};
