@@ -16,7 +16,7 @@ export const updateCarDebugCubes = (world: World) => {
 
 	{
 		const body = world.debugCubes[0];
-		vec3.set(v, 0, 0, 0.44);
+		vec3.set(v, 0, 0, 0.3);
 		vec3.set(s, 1, 0.6, 0.3);
 		quat.identity(q);
 		mat4.fromRotationTranslationScale(body, q, v, s);
@@ -24,15 +24,15 @@ export const updateCarDebugCubes = (world: World) => {
 	}
 	{
 		const body = world.debugCubes[1];
-		vec3.set(v, -0.2, 0, 0.93);
+		vec3.set(v, -0.15, 0, 0.55);
 		vec3.set(s, 0.5, 0.6, 0.2);
 		quat.identity(q);
 		mat4.fromRotationTranslationScale(body, q, v, s);
 		mat4.multiply(body, m, body);
 	}
 
-	vec3.set(s, 0.35, 0.16, 0.35);
-	vec3.set(v, 0.8, 0.75, 0.35 / 2);
+	vec3.set(v, 0.4, 0.4, 0.35 / 2);
+	vec3.set(s, 0.35, 0.2, 0.35);
 	{
 		const wheel = world.debugCubes[2];
 		quat.identity(q);

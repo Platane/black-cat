@@ -3,6 +3,7 @@ body {
 	height: 100vh;
 }
 html {
+	overflow: hidden;
 	user-select: none;
 	overscroll-behavior: none;
 }
