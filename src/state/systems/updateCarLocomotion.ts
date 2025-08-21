@@ -1,6 +1,6 @@
 import { mat4, quat, vec3 } from "gl-matrix";
 import { World } from "../world/type";
-import { getHeightAt } from "./utils-ground";
+import { getNormalAt } from "./utils-ground";
 
 export const updateCarControl = (world: World) => {
 	world.car.steeringTarget = 0;
@@ -14,6 +14,16 @@ export const updateCarControl = (world: World) => {
 	if (world.userInputs.keydown.has("arrow_down")) world.car.throttle -= 1;
 };
 
+const wheels = Array.from({ length: 4 }, () => ({
+	localPosition: vec3.create(),
+	position: vec3.create(),
+	normal: vec3.create(),
+	y: 0,
+}));
+vec3.set(wheels[0].position, 0.4, 0.4, 0);
+vec3.set(wheels[1].position, -0.4, 0.4, 0);
+vec3.set(wheels[2].position, -0.4, -0.4, 0);
+vec3.set(wheels[3].position, 0.4, -0.4, 0);
 export const updateCarLocomotion = (world: World) => {
 	{
 		const tension = 0.1;
@@ -44,9 +54,14 @@ export const updateCarLocomotion = (world: World) => {
 
 	world.car.position[0] += v[0] * world.car.speed;
 	world.car.position[1] += v[1] * world.car.speed;
+	world.car.position[2] = 1;
 
-	world.car.position[2] =
-		0.8 * getHeightAt(world, world.car.position[0], world.car.position[1]);
+	for (const wheel of wheels) {
+		vec3.transformQuat(wheel.position, wheel.localPosition, world.car.rotation);
+		vec3.add(wheel.position, wheel.position, world.car.position);
+
+		getNormalAt(wheel, world, wheel.position[0], wheel.position[1]);
+	}
 };
 
 export type Transform = {

@@ -32,6 +32,7 @@ export type World = {
 			velocity: vec3;
 		}[];
 
+		velocity: vec3;
 		position: vec3;
 		rotation: quat;
 	};
@@ -88,6 +89,8 @@ export type ChunkInfo = {
 export type Ground = {
 	// indexed by [ x + y * sizeInChunk ]
 	chunks: Chunk[];
+
+	voxelHeight: number;
 
 	generation: number; // sum of all chunk generation
 } & ChunkInfo;

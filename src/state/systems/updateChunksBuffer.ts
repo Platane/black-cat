@@ -7,6 +7,8 @@ const scale = [1, 1, 0.8];
 export const updateChunksBufferBrute = (world: World) => {
 	if (world.groundBuffer.generation === world.ground.generation) return;
 
+	scale[2] = world.ground.voxelHeight;
+
 	world.groundBuffer.nVertices = 0;
 	for (let i = world.ground.chunks.length; i--; ) {
 		const x = i % world.ground.sizeInChunk;
@@ -52,6 +54,8 @@ export const createGroundBuffer = ({
 export const updateChunksBuffer = (world: World) => {
 	if (world.groundBuffer.generation == world.ground.generation) return;
 
+	scale[2] = world.ground.voxelHeight;
+
 	for (let i = world.ground.chunks.length; i--; ) {
 		const index = world.groundBuffer.chunkIndices[i * 3 + 0];
 		const generation = world.groundBuffer.chunkIndices[i * 3 + 1];
@@ -81,6 +85,7 @@ const updateOneChunk = (world: World, i: number) => {
 
 	translation[0] = x * world.ground.chunkSize + 0.5;
 	translation[1] = y * world.ground.chunkSize + 0.5;
+	translation[2] = 0.5;
 	const newLength = generateChunkHull(
 		world.groundBuffer.buffer,
 		end * 9,

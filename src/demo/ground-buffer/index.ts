@@ -61,6 +61,7 @@ const ground: World["ground"] = {
 	chunkSize: 8,
 	chunks: [],
 	generation: 1,
+	voxelHeight: 0.6,
 };
 const groundBuffer = createGroundBuffer(ground);
 for (let k = ground.sizeInChunk ** 2; k--; ) {

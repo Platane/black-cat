@@ -1,3 +1,4 @@
+import { quat } from "gl-matrix";
 import { createRenderer } from "./renderer";
 import { createEventListeners } from "./state/systems/eventListeners";
 import { updateCameraMatrix } from "./state/systems/updateCameraMatrix";
@@ -57,11 +58,19 @@ const world: World = {
 			},
 		],
 
-		position: [4, 4, 0],
-		rotation: [0, 0, 0, 1],
+		position: [2, 2, 0],
+		velocity: [0, 0, 0],
+		// rotation: [0, 0, 0, 1],
+		rotation: (() => {
+			const q = quat.create();
+			quat.identity(q);
+			quat.rotateZ(q, q, -Math.PI / 4);
+			return q;
+		})(),
 	},
 	ground: {
 		...groundInfo,
+		voxelHeight: 1,
 		chunks: Array.from(
 			{ length: groundInfo.sizeInChunk * groundInfo.sizeInChunk },
 			() => {
@@ -87,6 +96,11 @@ const world: World = {
 							] = voxel.rock_cube;
 					}
 				}
+				grid.fill(0);
+				grid[0] = voxel.sand_cube;
+				grid[groundInfo.chunkHeight] = voxel.sand_cube;
+				grid[groundInfo.chunkHeight * 2] = voxel.sand_cube;
+				grid[groundInfo.chunkHeight * 3 + 1] = voxel.sand_cube;
 				return { grid, generation: 1 };
 			},
 		),

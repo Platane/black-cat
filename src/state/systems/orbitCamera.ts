@@ -28,9 +28,19 @@ export const createOrbitControl = (
 	const v = vec3.create();
 	vec3.sub(v, state.eye, state.target);
 
-	let radius = vec3.length(v);
-	let phi = Math.asin(v[2] / radius);
-	let theta = Math.asin(v[0] / radius / Math.cos(phi));
+	let radius = 0;
+	let phi = 0;
+	let theta = 0;
+
+	const setAnchor = () => {
+		vec3.sub(v, state.eye, state.target);
+
+		radius = vec3.length(v);
+		phi = Math.asin(v[2] / radius);
+		theta = Math.asin(v[0] / radius / Math.cos(phi));
+	};
+
+	setAnchor();
 
 	const update = () => {
 		state.eye[0] = state.target[0] + radius * Math.sin(theta) * Math.cos(phi);

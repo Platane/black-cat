@@ -1,6 +1,5 @@
 import { mat4, quat, vec3 } from "gl-matrix";
 import { World } from "../world/type";
-import { getHeightAt } from "./utils-ground";
 
 const worldTarget = vec3.create();
 const v = vec3.create();
