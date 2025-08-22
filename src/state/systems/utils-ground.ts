@@ -155,7 +155,6 @@ export const getSphereCollision = (
 									distance: distanceToPlan,
 									contactPoint: p,
 									normal: [plane[0], plane[1], plane[2]],
-									penetration: sphereRadius - distanceToPlan,
 								});
 							} else {
 								if (p[0] < x) p[0] = x;
@@ -172,7 +171,6 @@ export const getSphereCollision = (
 										distance: distanceToCube,
 										contactPoint: p,
 										normal: [plane[0], plane[1], plane[2]],
-										penetration: sphereRadius - distanceToPlan,
 									});
 								}
 							}

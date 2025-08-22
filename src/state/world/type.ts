@@ -32,6 +32,13 @@ export type World = {
 			velocity: vec3;
 		}[];
 
+		wheels: {
+			localPosition: vec3;
+			worldPosition: vec3;
+			velocity: vec3;
+			acceleration: vec3;
+		}[];
+
 		velocity: vec3;
 		position: vec3;
 		rotation: quat;
@@ -40,6 +47,7 @@ export type World = {
 	ground: Ground;
 
 	debugCubes: Float32Array[];
+	debugCubesIndex: number;
 
 	// derived from the ground
 	groundBuffer: GroundBuffer;

@@ -1,4 +1,4 @@
-import { quat } from "gl-matrix";
+import { quat, vec3 } from "gl-matrix";
 import { createRenderer } from "./renderer";
 import { createEventListeners } from "./state/systems/eventListeners";
 import { updateCameraMatrix } from "./state/systems/updateCameraMatrix";
@@ -6,7 +6,8 @@ import { updateCarBones } from "./state/systems/updateCarBones";
 import { updateCarDebugCubes } from "./state/systems/updateCarDebugCubes";
 import {
 	updateCarControl,
-	updateCarLocomotion,
+	updateCarEngine,
+	updateCarPhysic,
 } from "./state/systems/updateCarLocomotion";
 import {
 	createGroundBuffer,
@@ -58,13 +59,40 @@ const world: World = {
 			},
 		],
 
-		position: [2, 2, 0],
+		wheels: [
+			{
+				localPosition: [0.4, 0.3, 0.2],
+				worldPosition: vec3.create(),
+				velocity: vec3.create(),
+				acceleration: vec3.create(),
+			},
+			{
+				localPosition: [-0.4, 0.3, 0.2],
+				worldPosition: vec3.create(),
+				velocity: vec3.create(),
+				acceleration: vec3.create(),
+			},
+			{
+				localPosition: [-0.4, -0.3, 0.2],
+				worldPosition: vec3.create(),
+				velocity: vec3.create(),
+				acceleration: vec3.create(),
+			},
+			{
+				localPosition: [0.4, -0.3, 0.2],
+				worldPosition: vec3.create(),
+				velocity: vec3.create(),
+				acceleration: vec3.create(),
+			},
+		],
+
+		position: [2, 0.5, 0],
 		velocity: [0, 0, 0],
 		// rotation: [0, 0, 0, 1],
 		rotation: (() => {
 			const q = quat.create();
 			quat.identity(q);
-			quat.rotateZ(q, q, -Math.PI / 4);
+			// quat.rotateZ(q, q, -Math.PI / 4);
 			return q;
 		})(),
 	},
@@ -100,6 +128,7 @@ const world: World = {
 				grid[0] = voxel.sand_cube;
 				grid[groundInfo.chunkHeight] = voxel.sand_cube;
 				grid[groundInfo.chunkHeight * 2] = voxel.sand_cube;
+				grid[groundInfo.chunkHeight * 3] = voxel.sand_cube;
 				grid[groundInfo.chunkHeight * 3 + 1] = voxel.sand_cube;
 				return { grid, generation: 1 };
 			},
@@ -110,7 +139,8 @@ const world: World = {
 	viewMatrix: Object.assign(new Float32Array(16), { generation: 0 }),
 	projectionMatrix: Object.assign(new Float32Array(16), { generation: 0 }),
 
-	debugCubes: [],
+	debugCubes: Array.from({ length: 200 }, () => new Float32Array(16)),
+	debugCubesIndex: 0,
 };
 
 createEventListeners(world);
@@ -123,8 +153,11 @@ const loop = () => {
 	//
 	world.time++;
 
+	world.debugCubesIndex = 0;
+
 	updateCarControl(world);
-	updateCarLocomotion(world);
+	updateCarEngine(world);
+	updateCarPhysic(world);
 	updateFollowCamera(world);
 
 	updateCarBones(world);

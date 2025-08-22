@@ -51,11 +51,11 @@ export const createRenderer = (canvas: HTMLCanvasElement) => {
 		// render
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-		for (const m of world.debugCubes)
+		for (let i = world.debugCubesIndex; i--; )
 			materialMeshColored.render(
 				world.projectionMatrix,
 				world.viewMatrix,
-				m,
+				world.debugCubes[i],
 				bufferSet,
 			);
 
