@@ -1,4 +1,4 @@
-import { execFileSync } from "node:child_process";
+import { execFileSync, execSync } from "node:child_process";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import commonjs from "@rollup/plugin-commonjs";
@@ -184,6 +184,7 @@ export const build = async () => {
 			fs.writeFileSync(distDir + a.fileName, a.source);
 		}
 	}
+	execSync(`cp -r ${__dirname + "/../src/public"}/* ${distDir}`);
 
 	// zip
 	execFileSync("advzip", [
