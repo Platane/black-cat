@@ -127,3 +127,10 @@ export type Key =
 	| "arrow_down"
 	| "primary"
 	| "secondary";
+
+export const slopeDirections = {
+	[voxel.sand_slope_x_positive]: [1, 0] as [number, number],
+	[voxel.sand_slope_x_negative]: [-1, 0] as [number, number],
+	[voxel.sand_slope_y_positive]: [0, 1] as [number, number],
+	[voxel.sand_slope_y_negative]: [0, -1] as [number, number],
+};

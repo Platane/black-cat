@@ -47,7 +47,7 @@ export const updateCarPhysic = (world: World) => {
 
 	world.car.position[0] += v[0] * world.car.speed;
 	world.car.position[1] += v[1] * world.car.speed;
-	world.car.position[2] = 1;
+	// world.car.position[2] = 1;
 
 	const car = world.car;
 
@@ -76,17 +76,10 @@ export const updateCarPhysic = (world: World) => {
 			wheelRadius,
 		);
 
-		constraints.push(
-			...collisions.map((c) => ({
-				normal: c.normal,
-				penetration: wheelRadius - c.distance,
-			})),
-		);
+		constraints.push(...collisions);
 
 		for (const c of collisions) {
-			if (c.distance < wheelRadius - 0.001) console.log("bump", c.distance);
-
-			const u = (1 - Math.min(1, Math.max(c.distance, 0.01))) ** 2 * 0.2;
+			const u = (c.penetration / wheelRadius) * 0.1;
 			{
 				const cube = world.debugCubes[world.debugCubesIndex++];
 				vec3.copy(v, c.contactPoint);
@@ -111,23 +104,31 @@ export const updateCarPhysic = (world: World) => {
 			return sum;
 		}, 0);
 
-	if (constraints.length > 0) debugger;
-	const d = vec3.create();
-	for (let i = 30; i--; ) {
-		const e = getError(d);
-		const eps = 0.001;
-		const dx = (getError([d[0] + eps, d[1], d[2]]) - e) / eps;
-		const dy = (getError([d[0], d[1] + eps, d[2]]) - e) / eps;
-		const dz = (getError([d[0], d[1], d[2] + eps]) - e) / eps;
+	{
+		const d = vec3.create();
+		for (let i = 50; i--; ) {
+			const e = getError(d);
+			const eps = 0.001;
+			const dx = -(getError([d[0] + eps, d[1], d[2]]) - e) / eps;
+			const dy = -(getError([d[0], d[1] + eps, d[2]]) - e) / eps;
+			const dz = -(getError([d[0], d[1], d[2] + eps]) - e) / eps;
 
-		d[0] -= dx * 1.0;
-		d[1] -= dy * 1.0;
-		d[2] -= dz * 1.0;
+			d[0] += dx * 0.01;
+			d[1] += dy * 0.01;
+			d[2] += dz * 0.01;
+
+			// const l = Math.hypot(dx, dy, dz);
+
+			// if (l <= 0) continue;
+			// d[0] += (dx / l) * 0.01 * (i / 30);
+			// d[1] += (dy / l) * 0.01 * (i / 30);
+			// d[2] += (dz / l) * 0.01 * (i / 30);
+		}
+
+		car.position[0] += d[0];
+		car.position[1] += d[1];
+		car.position[2] += d[2];
 	}
-
-	car.position[0] += d[0];
-	car.position[1] += d[1];
-	car.position[2] += d[2];
 
 	// derive car position from the wheels
 	{

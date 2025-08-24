@@ -1,5 +1,5 @@
 import { vec3 } from "gl-matrix";
-import { Chunk, voxel } from "../../state/world/type";
+import { Chunk, slopeDirections, voxel } from "../../state/world/type";
 import { hashInt } from "../../utils/random";
 
 const color: [number, number, number] = [0, 0, 0];
@@ -348,12 +348,13 @@ export const generateChunkHull = (
 
 				if (v === voxel.sand_cube || v === voxel.rock_cube)
 					processCube(x, y, z);
-				else if (v === voxel.sand_slope_x_positive) processSlope(x, y, z, 1, 0);
-				else if (v === voxel.sand_slope_x_negative)
-					processSlope(x, y, z, -1, 0);
-				else if (v === voxel.sand_slope_y_positive) processSlope(x, y, z, 0, 1);
-				else if (v === voxel.sand_slope_y_negative)
-					processSlope(x, y, z, 0, -1);
+				else if (
+					v === voxel.sand_slope_x_positive ||
+					v === voxel.sand_slope_x_negative ||
+					v === voxel.sand_slope_y_positive ||
+					v === voxel.sand_slope_y_negative
+				)
+					processSlope(x, y, z, ...slopeDirections[v]);
 			}
 
 	return i;

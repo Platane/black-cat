@@ -86,7 +86,7 @@ const world: World = {
 			},
 		],
 
-		position: [2, 0.5, 0],
+		position: [2, 0.5, 1],
 		velocity: [0, 0, 0],
 		// rotation: [0, 0, 0, 1],
 		rotation: (() => {
@@ -127,9 +127,12 @@ const world: World = {
 				grid.fill(0);
 				grid[0] = voxel.sand_cube;
 				grid[groundInfo.chunkHeight] = voxel.sand_cube;
+				grid[groundInfo.chunkHeight * 0 + 1] = voxel.sand_slope_x_negative;
 				grid[groundInfo.chunkHeight * 2] = voxel.sand_cube;
 				grid[groundInfo.chunkHeight * 3] = voxel.sand_cube;
-				grid[groundInfo.chunkHeight * 3 + 1] = voxel.sand_cube;
+				// grid[groundInfo.chunkHeight * 3 + 1] = voxel.sand_slope_x_positive;
+				// grid[groundInfo.chunkHeight * 4 + 1] = voxel.sand_cube;
+				// grid[groundInfo.chunkHeight * 3 + 1] = voxel.sand_cube;
 				return { grid, generation: 1 };
 			},
 		),
